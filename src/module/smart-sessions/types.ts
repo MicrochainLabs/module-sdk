@@ -8,6 +8,7 @@ export type Session = {
   salt: Hex
   // todo: make the below optional but require one of them to be defined
   userOpPolicies: PolicyData[]
+  userOpZkPolicies: PolicyData[]
   erc7739Policies: ERC7739Data
   actions: ActionData[]
   permitERC4337Paymaster: boolean
@@ -20,6 +21,7 @@ export type SignedPermissions = {
   ignoreSecurityAttestations: boolean
   permitERC4337Paymaster: boolean
   userOpPolicies: PolicyData[]
+  userOpZkPolicies: PolicyData[]
   erc7739Policies: ERC7739Data
   actions: ActionData[]
 }
