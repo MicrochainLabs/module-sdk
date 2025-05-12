@@ -23,7 +23,7 @@ type ContractValueWhitelistState = {
   sessionOwnerPk: Hex
 }
 
-type ContractValueWhitelistTree = {
+type ContractValueWhitelistTrees = {
   smartContractCalls: IMT
   valueTransfers: IMT
 }
@@ -42,9 +42,9 @@ type ContractValueWhitelistTransaction = {
   Erc20TransferTo: bigint
 }
 
-export const getContractValueWhitelistStateTree = (
+export const getContractAndValueWhitelistTrees = (
   contractValueWhitelistState: ContractValueWhitelistState, whitelistTreeDepth: number
-): ContractValueWhitelistTree => {
+): ContractValueWhitelistTrees => {
   const zeroValue = 0
   const arity = 2
   const smartContractCallsWhitelistTree = new IMT(poseidon2, whitelistTreeDepth, zeroValue, arity);
@@ -63,9 +63,22 @@ export const getContractValueWhitelistStateTree = (
   }
 }
 
+export const getContractValueWhitelistStateTree = (
+  contractValueWhitelistState: ContractValueWhitelistState, contractValueWhitelistTrees: ContractValueWhitelistTrees
+): IMT => {
+  const zeroValue = 0
+  const arity = 2
+  const stateTree = new IMT(poseidon2, 2, zeroValue, arity);
+  stateTree.insert(BigInt(contractValueWhitelistState.smartAccount))
+  stateTree.insert(BigInt(contractValueWhitelistState.configId))
+  stateTree.insert(BigInt(contractValueWhitelistTrees.smartContractCalls.root))
+  stateTree.insert(BigInt(contractValueWhitelistTrees.valueTransfers.root))
+  return stateTree
+}
+
 export const getCircuitInputs = (
   txs: ContractValueWhitelistTransaction[], userOpHash: Hex, 
-  contractValueWhitelistState: ContractValueWhitelistState, contractValueWhitelistTree: ContractValueWhitelistTree
+  contractValueWhitelistState: ContractValueWhitelistState, contractValueWhitelistTrees: ContractValueWhitelistTrees
 ) => {
 
   const sessionOwner = privateKeyToAccount(contractValueWhitelistState.sessionOwnerPk)
@@ -76,8 +89,8 @@ export const getCircuitInputs = (
   const circuitInputs = {
     smartAccount: BigInt(contractValueWhitelistState.smartAccount),
     configId: BigInt(sessionOwner.address),
-    contractWhitelistRoot: contractValueWhitelistTree.smartContractCalls.root,
-    valueWhitelistRoot: contractValueWhitelistTree.valueTransfers.root,
+    contractWhitelistRoot: contractValueWhitelistTrees.smartContractCalls.root,
+    valueWhitelistRoot: contractValueWhitelistTrees.valueTransfers.root,
     userOpHash: op,
     dest:[] as bigint[],
     value: [] as bigint[],
@@ -91,7 +104,7 @@ export const getCircuitInputs = (
     erc20TransferPathIndices: [] as number[][] 
   }
 
-  const defaultArray = Array.from({ length: contractValueWhitelistTree.smartContractCalls.depth }, () => 0)
+  const defaultArray = Array.from({ length: contractValueWhitelistTrees.smartContractCalls.depth }, () => 0)
   for(let tx of txs){
         
     circuitInputs.dest.push(tx.dest)
@@ -99,8 +112,8 @@ export const getCircuitInputs = (
     circuitInputs.functionSelector.push(BigInt(tx.functionSelector))
     circuitInputs.erc20TransferTo.push(BigInt(tx.Erc20TransferTo))
     if(tx.value != BigInt("0x0")){
-      const index= contractValueWhitelistTree.valueTransfers.indexOf(tx.dest);
-      const nativeCoinTransferProof=  contractValueWhitelistTree.valueTransfers.createProof(index);
+      const index= contractValueWhitelistTrees.valueTransfers.indexOf(tx.dest);
+      const nativeCoinTransferProof=  contractValueWhitelistTrees.valueTransfers.createProof(index);
       circuitInputs.nativeCoinTransferSiblings.push(nativeCoinTransferProof.siblings.map((s) => s[0]))
       circuitInputs.nativeCoinTransferIndices.push(nativeCoinTransferProof.pathIndices)
     }else{
@@ -110,8 +123,8 @@ export const getCircuitInputs = (
     }
 
     if(tx.functionSelector != BigInt("0x0")){
-      const index= contractValueWhitelistTree.smartContractCalls.indexOf(tx.dest);
-      const smartContractCallProof= contractValueWhitelistTree.smartContractCalls.createProof(index);
+      const index= contractValueWhitelistTrees.smartContractCalls.indexOf(tx.dest);
+      const smartContractCallProof= contractValueWhitelistTrees.smartContractCalls.createProof(index);
       circuitInputs.smartContractCallSiblings.push(smartContractCallProof.siblings.map((s) => s[0]))
       circuitInputs.smartContractCallPathIndices.push(smartContractCallProof.pathIndices)
     }else{
@@ -120,8 +133,8 @@ export const getCircuitInputs = (
     }
 
     if(tx.functionSelector == BigInt("0xa9059cbb") && tx.Erc20TransferTo != BigInt("0x0")){
-      const index= contractValueWhitelistTree.valueTransfers.indexOf(tx.Erc20TransferTo);
-      const erc20TransferProof= contractValueWhitelistTree.valueTransfers.createProof(index);
+      const index= contractValueWhitelistTrees.valueTransfers.indexOf(tx.Erc20TransferTo);
+      const erc20TransferProof= contractValueWhitelistTrees.valueTransfers.createProof(index);
       circuitInputs.erc20TransferSiblings.push(erc20TransferProof.siblings.map((s) => s[0]))
       circuitInputs.erc20TransferPathIndices.push(erc20TransferProof.pathIndices)
     }else{
