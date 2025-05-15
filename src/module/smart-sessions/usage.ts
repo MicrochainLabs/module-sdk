@@ -207,6 +207,23 @@ export const getSessionDigest = async ({
   })) as Hex
 }
 
+export const getUserOpZkPolicies = async ({
+  client,
+  account,
+  permissionId,
+}: {
+  client: PublicClient
+  account: Address
+  permissionId: Hex
+}) => {
+  return (await client.readContract({
+    address: GLOBAL_CONSTANTS.SMART_SESSIONS_ADDRESS,
+    abi,
+    functionName: 'getUserOpZkPolicies',
+    args: [account, permissionId],
+  })) as Address[]
+}
+
 export const encodeSmartSessionSignature = ({
   mode,
   permissionId,
@@ -241,6 +258,21 @@ export const encodeSmartSessionSignature = ({
     default:
       throw new Error(`Unknown mode ${mode}`)
   }
+}
+
+export const encodeSmartSessionSignatureAndProofs = ({
+  proofs,
+  signature,
+}: {
+  proofs: Hex[]
+  signature: Hex
+}) => {
+
+  return encodeAbiParameters(
+    [{ type: 'bytes[]' }],
+    [[signature, ...proofs]]
+  )
+  
 }
 
 export const encodeUseOrEnableSmartSessionSignature = async ({
@@ -390,7 +422,7 @@ export const hashChainSessions = (chainSessions: ChainSession[]): Hex => {
       ],
       ERC7739Context: [
         { name: 'appDomainSeparator', type: 'bytes32' },
-        { name: 'contentName', type: 'string[]' },
+        { name: 'contentNames', type: 'string[]' },
       ],
       ERC7739Data: [
         { name: 'allowedERC7739Content', type: 'ERC7739Context[]' },

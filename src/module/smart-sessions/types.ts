@@ -48,7 +48,7 @@ export type ERC7739Data = {
 
 export type ERC7739Context = {
   appDomainSeparator: Hex
-  contentName: string[]
+  contentNames: string[]
 }
 
 export type ActionData = {
