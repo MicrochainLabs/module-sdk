@@ -239,7 +239,7 @@ export const encodeSmartSessionSignature = ({
     case SmartSessionMode.USE:
       return encodePacked(
         ['bytes1', 'bytes32', 'bytes'],
-        [mode, permissionId, signature],
+        [mode, permissionId,  LibZip.flzCompress(signature) as Hex],
       )
     case SmartSessionMode.ENABLE:
     case SmartSessionMode.UNSAFE_ENABLE:
@@ -297,7 +297,7 @@ export const encodeUseOrEnableSmartSessionSignature = async ({
   return sessionEnabled
     ? encodePacked(
         ['bytes1', 'bytes32', 'bytes'],
-        [SmartSessionMode.USE, permissionId, signature],
+        [SmartSessionMode.USE, permissionId, LibZip.flzCompress(signature) as Hex],
       )
     : encodePacked(
         ['bytes1', 'bytes'],
