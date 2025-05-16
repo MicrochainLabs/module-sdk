@@ -261,11 +261,11 @@ export const encodeSmartSessionSignature = ({
 }
 
 export const encodeSmartSessionSignatureAndProofs = ({
-  proofs,
   signature,
+  proofs,
 }: {
-  proofs: Hex[]
   signature: Hex
+  proofs: Hex[]
 }) => {
 
   return encodeAbiParameters(
