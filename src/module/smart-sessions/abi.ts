@@ -22,6 +22,23 @@ export const installSmartSessionsAbi = [
         type: 'tuple[]',
       },
       {
+        name: "userOpZkPolicies",
+        type: "tuple[]",
+        internalType: "struct PolicyData[]",
+        components: [
+          {
+            name: "policy",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "initData",
+            type: "bytes",
+            internalType: "bytes",
+          }
+        ],
+      },
+      {
         components: [
           {
             components: [
@@ -132,6 +149,23 @@ export const enableSessionAbi = {
           internalType: 'struct PolicyData[]',
           name: 'userOpPolicies',
           type: 'tuple[]',
+        },
+        {
+          name: "userOpZkPolicies",
+          type: "tuple[]",
+          internalType: "struct PolicyData[]",
+          components: [
+            {
+              name: "policy",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "initData",
+              type: "bytes",
+              internalType: "bytes",
+            }
+          ],
         },
         {
           components: [

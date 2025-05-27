@@ -160,6 +160,7 @@ export {
   ChainDigest,
   ChainSession,
   getSmartSessionsCompatibilityFallback,
+  encodeSmartSessionSignatureAndProofs
 } from './smart-sessions'
 
 export {
