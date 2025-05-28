@@ -434,7 +434,6 @@ export const hashChainSessions = (chainSessions: ChainSession[]): Hex => {
         { name: 'ignoreSecurityAttestations', type: 'bool' },
         { name: 'permitERC4337Paymaster', type: 'bool' },
         { name: 'userOpPolicies', type: 'PolicyData[]' },
-        { name: 'userOpZkPolicies', type: 'PolicyData[]' },
         { name: 'erc7739Policies', type: 'ERC7739Data' },
         { name: 'actions', type: 'ActionData[]' },
       ],

@@ -139,6 +139,7 @@ export {
   getUsageLimitPolicy,
   getValueLimitPolicy,
   getTimeFramePolicy,
+  getContractAndValueWhitelistPolicy,
   encodeSmartSessionSignature,
   encodeUseOrEnableSmartSessionSignature,
   decodeSmartSessionSignature,
@@ -159,8 +160,16 @@ export {
   EnableSessionData,
   ChainDigest,
   ChainSession,
+  ContractValueWhitelistState,
+  ContractValueWhitelistTrees,
+  ContractValueWhitelistTransaction,
   getSmartSessionsCompatibilityFallback,
-  encodeSmartSessionSignatureAndProofs
+  encodeSmartSessionSignatureAndProofs,
+  mockproof,
+  getContractAndValueWhitelistTrees,
+  getContractValueWhitelistStateTree,
+  getCircuitInputs,
+  generateAndEncodeGroth16Proof
 } from './smart-sessions'
 
 export {

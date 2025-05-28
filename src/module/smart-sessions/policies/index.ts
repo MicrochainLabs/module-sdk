@@ -6,3 +6,5 @@ export * from './usage-limit-policy'
 export * from './time-frame-policy'
 export * from './value-limit-policy'
 export { ParamCondition } from './universal-action-policy/types'
+export * from './contractAndValueWhitelistPolicy'
+

@@ -15,15 +15,14 @@ import * as snarkjs from 'snarkjs';
 import { AbiCoder, hexlify } from "ethers";
 
 
-type ContractValueWhitelistState = {
+export type ContractValueWhitelistState = {
   smartAccount: Address
   configId: string
   smartContractCalls: Address[]
   valueTransfers: Address[]
-  sessionOwnerPk: Hex
 }
 
-type ContractValueWhitelistTrees = {
+export type ContractValueWhitelistTrees = {
   smartContractCalls: IMT
   valueTransfers: IMT
 }
@@ -35,7 +34,7 @@ type ContractValueWhitelistTrees = {
   Erc20TransferTo: Address
 }*/
 
-type ContractValueWhitelistTransaction = {
+export type ContractValueWhitelistTransaction = {
   dest: bigint,
   value: bigint,
   functionSelector: bigint,
@@ -77,18 +76,16 @@ export const getContractValueWhitelistStateTree = (
 }
 
 export const getCircuitInputs = (
-  txs: ContractValueWhitelistTransaction[], userOpHash: Hex, 
+  txs: ContractValueWhitelistTransaction[], userOpHash: Hex,
   contractValueWhitelistState: ContractValueWhitelistState, contractValueWhitelistTrees: ContractValueWhitelistTrees
 ) => {
-
-  const sessionOwner = privateKeyToAccount(contractValueWhitelistState.sessionOwnerPk)
 
   let op = BigInt(userOpHash)
   op %= PROOF_SYSTEM_CONSTANTS.SNARK_SCALAR_FIELD
 
   const circuitInputs = {
     smartAccount: BigInt(contractValueWhitelistState.smartAccount),
-    configId: BigInt(sessionOwner.address),
+    configId: BigInt(contractValueWhitelistState.configId),
     contractWhitelistRoot: contractValueWhitelistTrees.smartContractCalls.root,
     valueWhitelistRoot: contractValueWhitelistTrees.valueTransfers.root,
     userOpHash: op,
@@ -155,3 +152,5 @@ export const generateAndEncodeGroth16Proof = async (circuitInputs: any, witnessG
   
   return submittedProof;
 }
+
+export const mockproof = "0x24d339928ff2ce552e8ecd9d98de24b0a84fae32b5d6b53f7033af0944c6a9da23bfb8304bd382e0b1ad896493f2e195c7f68791e43dc1a76ee7333d2c02eb8e180bea4a2346861e8efc9b3548cdf1323f0de8dff35d405e67162690af03623f2ddbfb4ca8d11104318354ddc25262343eb8c09de622cbb0d59f65649f5c640625b9045566b391d22952e9992a213e2604ec4235fc9a5d255eb0b52eb63fec0a267c80e3526ffd0363c5e5d0c5393366a877f682923c48f020ffffa989b7428a1a299495d594dda7d3258f78d3c34ee3eb1785e63d0bcba0e84f3598fed9484e137bb0eff1bdf71cad506e71ba6990161972075d640e5f8da435cc80c37fe83405a2007fc731228be65ef5d02f220928e18d71645f58c370f649544d824f94b0"
