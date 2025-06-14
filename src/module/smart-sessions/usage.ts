@@ -786,3 +786,26 @@ export const getEnableSessionDetails = async ({
     },
   }
 }
+
+
+/**
+ * Converts PermissionId to UserOpPolicyId
+ */
+function toUserOpPolicyId(permissionId: Hex): Hex {
+  return permissionId;
+}
+
+/**
+ * Converts UserOpPolicyId and address into a ConfigId
+ */
+function toConfigId(userOpPolicyId: Hex, account: Address): Hex {
+  return keccak256(encodePacked(['address', 'bytes32'], [account, userOpPolicyId]));
+}
+
+/**
+ * Full chain: PermissionId -> UserOpPolicyId -> ConfigId
+ */
+export const permissionIdToConfigId = (permissionId: Hex, account: Address): Hex => {
+  const userOpPolicyId = toUserOpPolicyId(permissionId);
+  return toConfigId(userOpPolicyId, account);
+}

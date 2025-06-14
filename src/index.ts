@@ -128,6 +128,7 @@ export {
   hashChainSessions,
   getPermissions,
   getEnableSessionDetails,
+  permissionIdToConfigId,
   getAccountEIP712Domain,
   SmartSessionMode,
   Session,
