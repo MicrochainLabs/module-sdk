@@ -83,9 +83,12 @@ export const getCircuitInputs = (
   let op = BigInt(userOpHash)
   op %= PROOF_SYSTEM_CONSTANTS.SNARK_SCALAR_FIELD
 
+  let configId = BigInt(contractValueWhitelistState.configId)
+  configId %= PROOF_SYSTEM_CONSTANTS.SNARK_SCALAR_FIELD
+
   const circuitInputs = {
     smartAccount: BigInt(contractValueWhitelistState.smartAccount),
-    configId: BigInt(contractValueWhitelistState.configId),
+    configId: configId,
     contractWhitelistRoot: contractValueWhitelistTrees.smartContractCalls.root,
     valueWhitelistRoot: contractValueWhitelistTrees.valueTransfers.root,
     userOpHash: op,
